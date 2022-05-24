@@ -1,1 +1,28 @@
-<p>diff works!</p>
+<table *ngIf="exchangeRates">
+  <caption>
+    Exchange Rates
+  </caption>
+  <thead>
+    <tr>
+      <th *ngFor="let er of exchangeRates.data.exchangeRate | keyvalue">
+        <span *ngIf="er.key !== '__typename'"> {{ er.key | uppercase }}</span>
+      </th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <td colspan="5">&nbsp;</td>
+    </tr>
+  </tfoot>
+  <tbody>
+    <tr>
+      <td *ngFor="let er of exchangeRates.data.exchangeRate | keyvalue">
+        <span *ngIf="er.key !== '__typename'">
+          <span *ngFor="let c of er.value | keyvalue">
+            <span *ngIf="c.key !== '__typename'">${{ c.value }}</span>
+          </span>
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>
