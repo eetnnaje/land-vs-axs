@@ -28,7 +28,6 @@ export class DiffComponent implements OnInit {
   itemAliases: string[] = [
     'p4', // 2% Less Time (Harvesting)
     'f11c', // 15% SPD (Wood Chopping)
-    'f12c', // 15% Less Time (Egg Hatching)
     'f20c', // 50% MISS (Chimera)
     'f17c', // 15% Stealth
     'f14c', // 15% EXP
@@ -37,6 +36,7 @@ export class DiffComponent implements OnInit {
     // 'f19c', // 15% SPD
     // 'f10c', // %15% ATK
     // 'f9c', // 15% DEF
+    // 'f12c', // 15% Less Time (Egg Hatching)
   ];
   cheapestItems: ItemDetail[] = [];
   totalItemsPrice: { [key: string]: number } = { eth: 0, usd: 0 };
