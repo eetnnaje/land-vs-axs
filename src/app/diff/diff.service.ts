@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ExchangeRates, LandsGrid, LandsItem } from './diff.interface';
+import { ExchangeRates, ItemDetail, LandsGrid, LandsItem } from './diff.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -193,5 +193,63 @@ export class DiffService {
       `,
     };
     return this.http.post<LandsItem>(url, data);
+  }
+
+  getItemDetails(itemAlias: string, itemId: number): Observable<ItemDetail> {
+    const url = 'https://graphql-gateway.axieinfinity.com/graphql';
+    const data = {
+      operationName: 'GetItemDetail',
+      variables: {
+        itemAlias: itemAlias,
+        itemId: itemId,
+      },
+      query: `
+        query GetItemDetail($itemAlias: String!, $itemId: Int!) {
+          item(itemAlias: $itemAlias, itemId: $itemId) {
+            ...ItemDetail
+            __typename
+          }
+        }
+        fragment ItemDetail on LandItem {
+          itemId
+          tokenId
+          tokenType
+          itemId
+          landType
+          name
+          itemAlias
+          description
+          rarity
+          effects
+          figureURL
+          owner
+          auction {
+            ...AxieAuction
+            __typename
+          }
+          ownerProfile {
+            name
+            __typename
+          }
+          __typename
+        }
+        fragment AxieAuction on Auction {
+          startingPrice
+          endingPrice
+          startingTimestamp
+          endingTimestamp
+          duration
+          timeLeft
+          currentPrice
+          currentPriceUSD
+          suggestedPrice
+          seller
+          listingIndex
+          state
+          __typename
+        }
+      `,
+    };
+    return this.http.post<ItemDetail>(url, data);
   }
 }

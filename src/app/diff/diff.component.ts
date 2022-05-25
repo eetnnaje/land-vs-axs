@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs';
-import { ExchangeRates, LandsGrid, LandsItem } from './diff.interface';
+import { forkJoin, Observable } from 'rxjs';
+import {
+  ExchangeRates,
+  ItemDetail,
+  LandsGrid,
+  LandsItem,
+} from './diff.interface';
 import { DiffService } from './diff.service';
 
 @Component({
@@ -33,8 +38,8 @@ export class DiffComponent implements OnInit {
     'f9c',
     'f11c',
   ];
-  cheapestItems!: LandsItem[];
-  totalItemsPrice!: { [key: string]: number };
+  cheapestItems: ItemDetail[] = [];
+  totalItemsPrice: { [key: string]: number } = { eth: 0, usd: 0 };
 
   constructor(private diffService: DiffService) {}
 
@@ -57,13 +62,16 @@ export class DiffComponent implements OnInit {
         this.diffService.getCheapestItem(itemAlias)
       )
     ).subscribe((landItems) => {
-      this.cheapestItems = landItems;
-      this.cheapestItems.forEach((item) => {
+      landItems.forEach((item) => {
         const [first] = item.data.items.results;
-        this.totalItemsPrice = {
-          eth: +first.auction.currentPrice,
-          usd: +first.auction.currentPriceUSD,
-        };
+        this.diffService
+          .getItemDetails(first.itemAlias, first.itemId)
+          .subscribe((itemDetail) => {
+            this.cheapestItems.push(itemDetail);
+          });
+
+        this.totalItemsPrice['eth'] += +first.auction.currentPrice;
+        this.totalItemsPrice['usd'] += +first.auction.currentPriceUSD;
       });
     });
   }
@@ -93,5 +101,9 @@ export class DiffComponent implements OnInit {
     days: number = 365
   ): number {
     return (apr / 100 / days) * value;
+  }
+
+  getItemDetail(itemAlias: string, itemId: number): Observable<ItemDetail> {
+    return this.diffService.getItemDetails(itemAlias, itemId);
   }
 }

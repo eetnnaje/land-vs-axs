@@ -298,6 +298,7 @@
     <tr>
       <th>Name</th>
       <th>Description</th>
+      <th>Effects</th>
       <th>Environment</th>
       <th>Rarity</th>
       <th>Price</th>
@@ -310,36 +311,31 @@
   </tfoot>
   <tbody>
     <tr *ngFor="let landItem of cheapestItems">
-      <td *ngIf="landItem.data.items.results">
+      <td>
         <div class="wrapper">
           <img
-            src="{{ landItem.data.items.results[0].figureURL }}"
+            src="{{ landItem.data.item.figureURL }}"
             alt=""
             width="32"
             height="32"
           />
           <a
             href="https://marketplace.axieinfinity.com/item/{{
-              landItem.data.items.results[0].itemAlias
-            }}/{{ landItem.data.items.results[0].itemId }}/"
+              landItem.data.item.itemAlias
+            }}/{{ landItem.data.item.itemId }}/"
             target="_blank"
-            >{{ landItem.data.items.results[0].name }}</a
+            >{{ landItem.data.item.name }}</a
           >
         </div>
       </td>
-      <td>[Description]</td>
-      <td>{{ landItem.data.items.results[0].landType }}</td>
-      <td>{{ landItem.data.items.results[0].rarity }}</td>
-      <td *ngIf="landItem.data.items.results">
+      <td>{{ landItem.data.item.description }}</td>
+      <td>{{ landItem.data.item.effects }}</td>
+      <td>{{ landItem.data.item.landType }}</td>
+      <td>{{ landItem.data.item.rarity }}</td>
+      <td>
         Ξ
-        {{
-          +landItem.data.items.results[0].auction.currentPrice / 1e18
-            | number: "0.2-2"
-        }}
-        ({{
-          landItem.data.items.results[0].auction.currentPriceUSD
-            | currency: "USD"
-        }})
+        {{ +landItem.data.item.auction.currentPrice / 1e18 | number: "0.2-2" }}
+        ({{ landItem.data.item.auction.currentPriceUSD | currency: "USD" }})
       </td>
     </tr>
   </tbody>

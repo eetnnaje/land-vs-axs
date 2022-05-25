@@ -93,3 +93,41 @@ export interface LandsItem {
     };
   };
 }
+
+export interface ItemDetail {
+  data: {
+    item: {
+      itemId: number;
+      tokenId: string;
+      tokenType: number;
+      landType: string;
+      name: string;
+      itemAlias: string;
+      description: string;
+      rarity: string;
+      effects: string;
+      figureURL: string;
+      owner: string;
+      auction: {
+        startingPrice: string;
+        endingPrice: string;
+        startingTimestamp: string;
+        endingTimestamp: string;
+        duration: string;
+        timeLeft: string;
+        currentPrice: string;
+        currentPriceUSD: string;
+        suggestedPrice: string;
+        seller: string;
+        listingIndex: number;
+        state: string;
+        __typename: string;
+      };
+      ownerProfile: {
+        name: string;
+        __typename: string;
+      };
+      __typename: string;
+    };
+  };
+}
