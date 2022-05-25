@@ -30,15 +30,18 @@
 <table *ngIf="cheapestPlots" class="cheapest-plots">
   <caption>
     <p>Cheapest Land Plots</p>
-    <input
-      #inputApr
-      (keyup)="onAprKeyUp(inputApr.value)"
-      placeholder="APR %"
-      type="number"
-      step="0.01"
-      [(ngModel)]="apr"
-    />
-    %
+    <div>
+      <label for="apr">APR %</label>
+      <input
+        id="apr"
+        #inputApr
+        (keyup)="onAprKeyUp(inputApr.value)"
+        placeholder="APR %"
+        type="number"
+        step="0.01"
+        [(ngModel)]="apr"
+      />
+    </div>
   </caption>
   <thead>
     <tr>
