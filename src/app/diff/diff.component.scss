@@ -17,11 +17,27 @@ td {
   padding: 0.5rem;
 }
 
-th:first-child,
-td:first-child {
+tfoot {
   display: none;
 }
 
-td {
+/* Exchange Rates */
+.exchange-rates th:first-child,
+.exchange-rates td:first-child {
+  display: none;
+}
+
+.exchange-rates td {
+  text-align: right;
+}
+
+/* Cheapest Plots */
+.cheapest-plots {
+  margin-top: 0.75rem;
+}
+
+.cheapest-plots ul {
+  list-style: none;
+  padding: 0;
   text-align: right;
 }

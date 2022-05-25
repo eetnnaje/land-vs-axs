@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ExchangeRates } from './diff.interface';
+import { ExchangeRates, LandsGrid } from './diff.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -42,5 +42,70 @@ export class DiffService {
       `,
     };
     return this.http.post<ExchangeRates>(url, data);
+  }
+
+  getCheapestLand(landType: string): Observable<LandsGrid> {
+    const url = 'https://graphql-gateway.axieinfinity.com/graphql';
+    landType = `${landType[0].toUpperCase()}${landType.substring(1)}`;
+    const data = {
+      operationName: 'GetLandsGrid',
+      variables: {
+        from: 0,
+        size: 1,
+        sort: 'PriceAsc',
+        auctionType: 'Sale',
+        owner: null,
+        criteria: { landType: [landType] },
+        filterStuckAuctions: false,
+      },
+      query: `
+        query GetLandsGrid(
+          $from: Int!
+          $size: Int!
+          $sort: SortBy!
+          $owner: String
+          $criteria: LandSearchCriteria
+          $auctionType: AuctionType
+          $filterStuckAuctions: Boolean
+        ) {
+          lands(
+            criteria: $criteria
+            from: $from
+            size: $size
+            sort: $sort
+            owner: $owner
+            auctionType: $auctionType
+            filterStuckAuctions: $filterStuckAuctions
+          ) {
+            total
+            results {
+              ...LandBriefV2
+              __typename
+            }
+            __typename
+          }
+        }
+
+        fragment LandBriefV2 on LandPlot {
+          tokenId
+          owner
+          landType
+          row
+          col
+          auction {
+            currentPrice
+            startingTimestamp
+            currentPriceUSD
+            __typename
+          }
+          ownerProfile {
+            name
+            __typename
+          }
+          __typename
+        }
+      `,
+    };
+    return this.http.post<LandsGrid>(url, data);
   }
 }
