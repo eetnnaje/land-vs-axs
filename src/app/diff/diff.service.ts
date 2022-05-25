@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ExchangeRates, LandsGrid } from './diff.interface';
+import { ExchangeRates, LandsGrid, LandsItem } from './diff.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -44,7 +44,7 @@ export class DiffService {
     return this.http.post<ExchangeRates>(url, data);
   }
 
-  getCheapestLand(landType: string): Observable<LandsGrid> {
+  getCheapestPlot(landType: string): Observable<LandsGrid> {
     const url = 'https://graphql-gateway.axieinfinity.com/graphql';
     landType = `${landType[0].toUpperCase()}${landType.substring(1)}`;
     const data = {
@@ -107,5 +107,91 @@ export class DiffService {
       `,
     };
     return this.http.post<LandsGrid>(url, data);
+  }
+
+  getCheapestItem(
+    itemAlias: string,
+    landType: string = 'forest',
+    rarity: string = 'epic'
+  ): Observable<LandsItem> {
+    const url = 'https://graphql-gateway.axieinfinity.com/graphql';
+    landType = `${landType[0].toUpperCase()}${landType.substring(1)}`;
+    rarity = `${rarity[0].toUpperCase()}${rarity.substring(1)}`;
+    const data = {
+      operationName: 'GetItemBriefList',
+      variables: {
+        from: 0,
+        size: 1,
+        sort: 'PriceAsc',
+        owner: null,
+        auctionType: 'Sale',
+        criteria: {
+          landType: [landType],
+          rarity: [rarity],
+          itemAlias: [itemAlias],
+        },
+        filterStuckAuctions: false,
+      },
+      query: `
+        query GetItemBriefList(
+          $from: Int
+          $size: Int
+          $sort: SortBy
+          $auctionType: AuctionType
+          $owner: String
+          $criteria: ItemSearchCriteria
+          $filterStuckAuctions: Boolean
+        ) {
+          items(
+            from: $from
+            size: $size
+            sort: $sort
+            auctionType: $auctionType
+            owner: $owner
+            criteria: $criteria
+            filterStuckAuctions: $filterStuckAuctions
+          ) {
+            total
+            results {
+              ...ItemBrief
+              __typename
+            }
+            __typename
+          }
+        }
+        fragment ItemBrief on LandItem {
+          itemId
+          tokenType
+          tokenId
+          itemId
+          landType
+          name
+          itemAlias
+          rarity
+          figureURL
+          auction {
+            ...AxieAuction
+            __typename
+          }
+          __typename
+        }
+        fragment AxieAuction on Auction {
+          startingPrice
+          endingPrice
+          startingTimestamp
+          endingTimestamp
+          duration
+          timeLeft
+          currentPrice
+          currentPriceUSD
+          suggestedPrice
+          seller
+          listingIndex
+          state
+          __typename
+        }
+      `,
+    };
+    return this.http.post<LandsItem>(url, data);
   }
 }

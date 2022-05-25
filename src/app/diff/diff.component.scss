@@ -41,3 +41,17 @@ tfoot {
   padding: 0;
   text-align: right;
 }
+
+/* Cheapest Items */
+.cheapest-items {
+  margin-top: 0.75rem;
+}
+
+.cheapest-items .wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.cheapest-items .wrapper img {
+  margin-right: 0.75rem;
+}

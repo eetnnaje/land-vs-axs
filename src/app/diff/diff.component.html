@@ -65,7 +65,8 @@
         </p>
         <ul *ngIf="cp.data.lands.results.length">
           <li>
-            Ξ{{
+            Ξ
+            {{
               +cp.data.lands.results[0].auction.currentPrice / 1e18
                 | number: "0.0"
             }}
@@ -79,6 +80,7 @@
               href="https://marketplace.axieinfinity.com/land/?type={{
                 cp.data.lands.results[0].landType | titlecase
               }}"
+              target="_blank"
               >MP &nearhk;</a
             >
             &mdash;
@@ -86,6 +88,7 @@
               href="https://marketplace.axieinfinity.com/land/{{
                 cp.data.lands.results[0].col
               }}/{{ cp.data.lands.results[0].row }}"
+              target="_blank"
               >Plot &nearhk;</a
             >
           </li>
@@ -277,6 +280,66 @@
             </dd>
           </dl>
         </dl>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table *ngIf="cheapestItems" class="cheapest-items">
+  <caption>
+    <p>Cheapest Land Items</p>
+    <p>
+      <strong>Total: </strong>
+      {{ totalItemsPrice["eth"] / 1e18 | number: "0.2-2" }}
+      ({{ totalItemsPrice["usd"] | currency: "USD" }})
+    </p>
+  </caption>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Environment</th>
+      <th>Rarity</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <td colspan="4">&nbsp;</td>
+    </tr>
+  </tfoot>
+  <tbody>
+    <tr *ngFor="let landItem of cheapestItems">
+      <td *ngIf="landItem.data.items.results">
+        <div class="wrapper">
+          <img
+            src="{{ landItem.data.items.results[0].figureURL }}"
+            alt=""
+            width="32"
+            height="32"
+          />
+          <a
+            href="https://marketplace.axieinfinity.com/item/{{
+              landItem.data.items.results[0].itemAlias
+            }}/{{ landItem.data.items.results[0].itemId }}/"
+            target="_blank"
+            >{{ landItem.data.items.results[0].name }}</a
+          >
+        </div>
+      </td>
+      <td>[Description]</td>
+      <td>{{ landItem.data.items.results[0].landType }}</td>
+      <td>{{ landItem.data.items.results[0].rarity }}</td>
+      <td *ngIf="landItem.data.items.results">
+        Ξ
+        {{
+          +landItem.data.items.results[0].auction.currentPrice / 1e18
+            | number: "0.2-2"
+        }}
+        ({{
+          landItem.data.items.results[0].auction.currentPriceUSD
+            | currency: "USD"
+        }})
       </td>
     </tr>
   </tbody>
