@@ -58,9 +58,9 @@ export class DiffComponent implements OnInit {
 
     // Land Item
     forkJoin(
-      this.itemAliases.map((itemAlias) =>
-        this.diffService.getCheapestItem(itemAlias)
-      )
+      this.itemAliases
+        .reverse()
+        .map((itemAlias) => this.diffService.getCheapestItem(itemAlias))
     ).subscribe((landItems) => {
       landItems.forEach((item) => {
         const [first] = item.data.items.results;
