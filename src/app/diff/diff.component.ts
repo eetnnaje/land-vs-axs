@@ -26,17 +26,17 @@ export class DiffComponent implements OnInit {
   };
   apr: number = 82; // 63.98; // => 100% APY
   itemAliases: string[] = [
-    'f2c',
-    'f6c',
-    'f19c',
-    'f14c',
-    'f10c',
-    'p4',
-    'f17c',
-    'f12c',
-    'f20c',
-    'f9c',
-    'f11c',
+    'f17c', // 2% Less Time (Harvest)
+    'f19c', // 15% SPD (Wood)
+    'f9c', // 50% MISS (Chimera)
+    'f14c', // 15% EXP
+    'p4', // 7% HP
+    'f2c', // 7% Heal
+    'f6c', // 15% SPD
+    'f10c', // %15% ATK
+    'f12c', // 15% DEF
+    'f11c', // 15% Stealth
+    'f20c', // 15% Less Time (Hatch)
   ];
   cheapestItems: ItemDetail[] = [];
   totalItemsPrice: { [key: string]: number } = { eth: 0, usd: 0 };
