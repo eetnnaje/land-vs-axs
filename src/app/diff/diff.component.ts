@@ -26,17 +26,17 @@ export class DiffComponent implements OnInit {
   };
   apr: number = 82; // 63.98; // => 100% APY
   itemAliases: string[] = [
-    'f17c', // 2% Less Time (Harvest)
-    'f19c', // 15% SPD (Wood)
-    'f9c', // 50% MISS (Chimera)
+    'p4', // 2% Less Time (Harvesting)
+    'f11c', // 15% SPD (Wood Chopping)
+    'f12c', // 15% Less Time (Egg Hatching)
+    'f20c', // 50% MISS (Chimera)
     'f14c', // 15% EXP
-    'p4', // 7% HP
+    'f17c', // 15% Stealth
+    'f6c', // 7% HP
     'f2c', // 7% Heal
-    'f6c', // 15% SPD
+    'f19c', // 15% SPD
     'f10c', // %15% ATK
-    'f12c', // 15% DEF
-    'f11c', // 15% Stealth
-    'f20c', // 15% Less Time (Hatch)
+    'f9c', // 15% DEF
   ];
   cheapestItems: ItemDetail[] = [];
   totalItemsPrice: { [key: string]: number } = { eth: 0, usd: 0 };
@@ -58,9 +58,9 @@ export class DiffComponent implements OnInit {
 
     // Land Item
     forkJoin(
-      this.itemAliases
-        .reverse()
-        .map((itemAlias) => this.diffService.getCheapestItem(itemAlias))
+      this.itemAliases.map((itemAlias) =>
+        this.diffService.getCheapestItem(itemAlias)
+      )
     ).subscribe((landItems) => {
       landItems.forEach((item) => {
         const [first] = item.data.items.results;
