@@ -19,7 +19,7 @@ export class DiffComponent implements OnInit {
     mystic: 1.64,
     genesis: 32.7,
   };
-  apr = 63.98; // 100%
+  apr = 82; // 63.98; // => 100% APY
 
   constructor(private diffService: DiffService) {}
 
