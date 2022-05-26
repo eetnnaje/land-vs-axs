@@ -297,11 +297,11 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th>Price</th>
       <th>Description</th>
       <th>Effects</th>
       <th>Environment</th>
       <th>Rarity</th>
-      <th>Price</th>
     </tr>
   </thead>
   <tfoot>
@@ -337,15 +337,43 @@
           >
         </div>
       </td>
+      <td>
+        <dl>
+          <dt>Current Price</dt>
+          <dd>
+            Ξ
+            {{
+              +landItem.data.item.auction.currentPrice / 1e18 | number: "0.2-2"
+            }}
+            ({{ landItem.data.item.auction.currentPriceUSD | currency: "USD" }})
+          </dd>
+          <dt
+            *ngIf="
+              +landItem.data.item.auction.endingTimestamp >
+              currentTimeStamp / 1000
+            "
+          >
+            Last Price
+          </dt>
+          <dd
+            *ngIf="
+              +landItem.data.item.auction.endingTimestamp >
+              currentTimeStamp / 1000
+            "
+          >
+            Ξ
+            {{
+              +landItem.data.item.auction.endingPrice / 1e18 | number: "0.2-2"
+            }}
+            @
+            {{ readableDate(+landItem.data.item.auction.endingTimestamp) }}
+          </dd>
+        </dl>
+      </td>
       <td>{{ landItem.data.item.description }}</td>
       <td>{{ landItem.data.item.effects }}</td>
       <td>{{ landItem.data.item.landType }}</td>
       <td>{{ landItem.data.item.rarity }}</td>
-      <td>
-        Ξ
-        {{ +landItem.data.item.auction.currentPrice / 1e18 | number: "0.2-2" }}
-        ({{ landItem.data.item.auction.currentPriceUSD | currency: "USD" }})
-      </td>
     </tr>
   </tbody>
 </table>

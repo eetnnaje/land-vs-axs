@@ -40,6 +40,7 @@ export class DiffComponent implements OnInit {
   ];
   cheapestItems: ItemDetail[] = [];
   totalItemsPrice: { [key: string]: number } = { eth: 0, usd: 0 };
+  currentTimeStamp = new Date().getTime();
 
   constructor(private diffService: DiffService) {}
 
@@ -70,8 +71,13 @@ export class DiffComponent implements OnInit {
             this.cheapestItems.push(itemDetail);
           });
 
-        this.totalItemsPrice['eth'] += +first.auction.currentPrice;
-        this.totalItemsPrice['usd'] += +first.auction.currentPriceUSD;
+        this.totalItemsPrice['eth'] += +first.auction.endingPrice;
+
+        this.diffService.getExchangeRates().subscribe((exchangeRates) => {
+          this.totalItemsPrice['usd'] +=
+            (+first.auction.endingPrice / 1e18) *
+            exchangeRates.data.exchangeRate.eth.usd;
+        });
       });
     });
   }
@@ -105,5 +111,17 @@ export class DiffComponent implements OnInit {
 
   getItemDetail(itemAlias: string, itemId: number): Observable<ItemDetail> {
     return this.diffService.getItemDetails(itemAlias, itemId);
+  }
+
+  readableDate(timestamp: number): string {
+    const lang = 'en-US';
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour12: true,
+    } as const;
+    return new Date(timestamp * 1000).toLocaleTimeString(lang, options);
   }
 }
