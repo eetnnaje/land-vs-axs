@@ -111,7 +111,7 @@
               getCompoundingReward(
                 0,
                 stakingRewards[cp.data.lands.results[0].landType | lowercase]
-              ) | number: "0.2-2"
+              ) | number: "0.4-4"
             }}
             ({{
               getCompoundingReward(
@@ -129,7 +129,7 @@
           <dd>
             {{
               +cp.data.lands.results[0].auction.currentPriceUSD /
-                exchangeRates.data.exchangeRate.axs.usd | number: "0.2-2"
+                exchangeRates.data.exchangeRate.axs.usd | number: "0.4-4"
             }}
             ({{
               getCompoundingReward(
@@ -146,7 +146,7 @@
                 stakingRewards[cp.data.lands.results[0].landType | lowercase]
               ) -
                 +cp.data.lands.results[0].auction.currentPriceUSD /
-                  exchangeRates.data.exchangeRate.axs.usd | number: "0.2-2"
+                  exchangeRates.data.exchangeRate.axs.usd | number: "0.4-4"
             }}
             ({{
               (getCompoundingReward(
@@ -166,7 +166,7 @@
                 stakingRewards[cp.data.lands.results[0].landType | lowercase]
               ) +
                 +cp.data.lands.results[0].auction.currentPriceUSD /
-                  exchangeRates.data.exchangeRate.axs.usd | number: "0.2-2"
+                  exchangeRates.data.exchangeRate.axs.usd | number: "0.4-4"
             }}
             ({{
               (getCompoundingReward(
@@ -191,7 +191,7 @@
                   +cp.data.lands.results[0].auction.currentPriceUSD /
                     exchangeRates.data.exchangeRate.axs.usd,
                   0
-                ) | number: "0.2-2"
+                ) | number: "0.4-4"
             }}
             ({{
               (getCompoundingReward(
@@ -218,7 +218,7 @@
                 getDailyReward(
                   +cp.data.lands.results[0].auction.currentPriceUSD /
                     exchangeRates.data.exchangeRate.axs.usd
-                ) | number: "0.2-2"
+                ) | number: "0.4-4"
               }}
               ({{
                 getDailyReward(
@@ -234,7 +234,7 @@
                   +cp.data.lands.results[0].auction.currentPriceUSD /
                     exchangeRates.data.exchangeRate.axs.usd,
                   0
-                ) | number: "0.2-2"
+                ) | number: "0.4-4"
               }}
               ({{
                 getCompoundingReward(
@@ -259,7 +259,7 @@
                     ]
                   ) +
                     +cp.data.lands.results[0].auction.currentPriceUSD /
-                      exchangeRates.data.exchangeRate.axs.usd) | number: "0.2-2"
+                      exchangeRates.data.exchangeRate.axs.usd) | number: "0.4-4"
               }}
               ({{
                 (getCompoundingReward(
@@ -290,7 +290,7 @@
     <p>Cheapest Land Items</p>
     <p>
       <strong>Total: </strong>
-      {{ totalItemsPrice["eth"] / 1e18 | number: "0.2-2" }}
+      {{ totalItemsPrice["eth"] / 1e18 | number: "0.4-4" }}
       ({{ totalItemsPrice["usd"] | currency: "USD" }})
     </p>
   </caption>
@@ -343,7 +343,7 @@
           <dd>
             Ξ
             {{
-              +landItem.data.item.auction.currentPrice / 1e18 | number: "0.2-2"
+              +landItem.data.item.auction.currentPrice / 1e18 | number: "0.4-4"
             }}
             ({{ landItem.data.item.auction.currentPriceUSD | currency: "USD" }})
           </dd>
@@ -363,7 +363,7 @@
           >
             Ξ
             {{
-              +landItem.data.item.auction.endingPrice / 1e18 | number: "0.2-2"
+              +landItem.data.item.auction.endingPrice / 1e18 | number: "0.4-4"
             }}
             @
             {{ readableDate(+landItem.data.item.auction.endingTimestamp) }}
