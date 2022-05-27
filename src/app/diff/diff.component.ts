@@ -93,15 +93,20 @@ export class DiffComponent implements OnInit {
         // Land Item
         forkJoin(
           filteredItemAlises.map((itemAlias) =>
-            this.diffService.getitemAliasAll(itemAlias)
+            this.diffService.getCheapestItem(itemAlias)
           )
         ).subscribe((landItems) => {
-          next: landItems.forEach((item) => {
+          landItems.forEach((item) => {
             const [first] = item.data.items.results;
             this.diffService
               .getItemDetails(first.itemAlias, first.itemId)
               .subscribe((itemDetail) => {
                 this.cheapestItems.push(itemDetail);
+                this.cheapestItems = this.cheapestItems.sort(
+                  (a, b) =>
+                    +a.data.item.auction.endingPrice -
+                    +b.data.item.auction.endingPrice
+                );
               });
 
             this.totalItemsPrice['eth'] += +first.auction.endingPrice;
@@ -112,25 +117,7 @@ export class DiffComponent implements OnInit {
                 exchangeRates.data.exchangeRate.eth.usd;
             });
           });
-
-          error: (error: string) => console.error(error);
-          complete: () =>
-            this.cheapestItems.sort((a, b) =>
-              a.data.item.auction.endingPrice.localeCompare(
-                b.data.item.auction.endingPrice
-              )
-            );
         });
-      });
-    });
-
-    // All item alias
-    this.diffService.getitemAliasAll('f11c').subscribe((result) => {
-      const items = result.data.items.results;
-      items.forEach((item) => {
-        if (+item.auction.endingTimestamp > this.currentTimestamp) {
-          console.log(item, +item.auction.endingPrice / 1e18);
-        }
       });
     });
   }
