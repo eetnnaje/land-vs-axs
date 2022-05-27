@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, from, Observable } from 'rxjs';
 import {
   ExchangeRates,
   ItemDetail,
+  LandItem,
   LandsGrid,
   LandsItem,
 } from './diff.interface';
@@ -25,20 +26,26 @@ export class DiffComponent implements OnInit {
     genesis: 32.7,
   };
   apr: number = 82; // 63.98; // => 100% APY
-  itemAliases: string[] = [
-    'p4', // 2% Less Time (Harvesting)
-    'f11c', // 15% SPD (Wood Chopping)
-    'f20c', // 50% MISS (Chimera)
-    'f17c', // 15% Stealth
-    'f14c', // 15% EXP
-    // 'f6c', // 7% HP
-    // 'f2c', // 7% Heal
-    // 'f19c', // 15% SPD
-    // 'f10c', // %15% ATK
-    // 'f9c', // 15% DEF
-    // 'f12c', // 15% Less Time (Egg Hatching)
-  ];
   cheapestItems: ItemDetail[] = [];
+  excludeItemAliases: string[] = [
+    'f1c', // Gilded Lamp: Increases Bird Axie Morale by 15% when battling Chimera.
+    'f2c', // Flower of Life: Increases all Axie Healing effects by 7% when battling Chimera.
+    'f3c', // Purple Lavender: Increases Bug class Axie attacking abilities by 15% when battling Chimera.
+    'f4c', // Ancient Pillar: Increases Plant class Axie HP by 15% when battling Chimera.
+    'f5c', // Voluptuous grapes: Bird and Aquatic Axie start with 3 turns of "Magic Shield" buff active when battling Chimera.
+    'f6c', // Spring Shrub: Increases Axie HP by 7% when battling Chimera.
+    'f7c', // Gold Wild Flower: Increases Bug Axie defensive abilities by 15% when battling Chimera.
+    'f8c', // Basket of Strawberries: Plant and Reptil Axie start with 3 turns of "Magic Shield" buff active when battling Chimera.
+    'f9c', // Intact ruin: Increases Axie defensive abiilties by 15% when battling Chimera on Forest Land.
+    'f10c', // Wise Bamboo: Increases Axie attacking abilities by 15% when battling Chimera on Forest Land.
+    'f13c', // Crimson Leaves: Increases Plant Axie HP by 15% when battling Chimera.
+    'f15c', // Gourd Vines: Beast and Bug Axie start with 3 turn of "Magic Shield" buff active when battling Chimera.
+    'f16c', // Crimson Serpent: Increases Reptile Axie HP by 15% when battling Chimera.
+    'f18c', //  Golden Cheeked Warbler Nest: Increases Bird Axie defensive abilities by 15% when battling Chimera.
+    'f19c', // Lavender Hydrangea: Increases Axie Speed by 15% when battling Chimera on Forest land.
+    'p2', // Ganbaru CrypTon: Increases Bird Axie speed by 15% when battling Chimera.
+    'p3b', // MakerDao Silver: Axies have a 2% greater chance to spill LUNA when traveling over land this item is placed on.
+  ];
   totalItemsPrice: { [key: string]: number } = { eth: 0, usd: 0 };
   currentTimeStamp = new Date().getTime();
 
@@ -57,26 +64,62 @@ export class DiffComponent implements OnInit {
       )
     ).subscribe((landGrids) => (this.cheapestPlots = landGrids));
 
-    // Land Item
-    forkJoin(
-      this.itemAliases.map((itemAlias) =>
-        this.diffService.getCheapestItem(itemAlias)
-      )
-    ).subscribe((landItems) => {
-      landItems.forEach((item) => {
-        const [first] = item.data.items.results;
-        this.diffService
-          .getItemDetails(first.itemAlias, first.itemId)
-          .subscribe((itemDetail) => {
-            this.cheapestItems.push(itemDetail);
+    // All Land Items
+    this.diffService.getAllItems().subscribe((result) => {
+      const total = result.data.items.total;
+      const maxLength = 100;
+      const pagination = Math.ceil(total / maxLength);
+
+      forkJoin(
+        Array(pagination)
+          .fill(0)
+          .map((_, i) => {
+            const from = i === 0 ? 0 : i * maxLength + 1;
+            const size = i === 0 ? maxLength : i * maxLength + maxLength;
+            return this.diffService.getAllItems(from, size);
+          })
+      ).subscribe((results) => {
+        let items: LandItem[] = [];
+
+        results.forEach((result) => {
+          items = [...items, ...result.data.items.results];
+        });
+
+        const itemAliases = [...new Set(items.map((item) => item.itemAlias))];
+        const filteredItemAlises = itemAliases.filter(
+          (itemAlias) => !this.excludeItemAliases.includes(itemAlias)
+        );
+
+        // Land Item
+        forkJoin(
+          filteredItemAlises.map((itemAlias) =>
+            this.diffService.getCheapestItem(itemAlias)
+          )
+        ).subscribe((landItems) => {
+          next: landItems.forEach((item) => {
+            const [first] = item.data.items.results;
+            this.diffService
+              .getItemDetails(first.itemAlias, first.itemId)
+              .subscribe((itemDetail) => {
+                this.cheapestItems.push(itemDetail);
+              });
+
+            this.totalItemsPrice['eth'] += +first.auction.endingPrice;
+
+            this.diffService.getExchangeRates().subscribe((exchangeRates) => {
+              this.totalItemsPrice['usd'] +=
+                (+first.auction.endingPrice / 1e18) *
+                exchangeRates.data.exchangeRate.eth.usd;
+            });
           });
 
-        this.totalItemsPrice['eth'] += +first.auction.endingPrice;
-
-        this.diffService.getExchangeRates().subscribe((exchangeRates) => {
-          this.totalItemsPrice['usd'] +=
-            (+first.auction.endingPrice / 1e18) *
-            exchangeRates.data.exchangeRate.eth.usd;
+          error: (error: string) => console.error(error);
+          complete: () =>
+            this.cheapestItems.sort((a, b) =>
+              a.data.item.auction.endingPrice.localeCompare(
+                b.data.item.auction.endingPrice
+              )
+            );
         });
       });
     });

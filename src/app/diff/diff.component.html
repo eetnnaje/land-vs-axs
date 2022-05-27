@@ -297,9 +297,10 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th>Alias</th>
       <th>Price</th>
-      <th>Description</th>
       <th>Effects</th>
+      <th>Description</th>
       <th>Environment</th>
       <th>Rarity</th>
     </tr>
@@ -337,6 +338,7 @@
           >
         </div>
       </td>
+      <td>{{ landItem.data.item.itemAlias }}</td>
       <td>
         <dl>
           <dt>Current Price</dt>
@@ -370,8 +372,8 @@
           </dd>
         </dl>
       </td>
-      <td>{{ landItem.data.item.description }}</td>
       <td>{{ landItem.data.item.effects }}</td>
+      <td>{{ landItem.data.item.description }}</td>
       <td>{{ landItem.data.item.landType }}</td>
       <td>{{ landItem.data.item.rarity }}</td>
     </tr>
