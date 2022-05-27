@@ -47,7 +47,7 @@ export class DiffComponent implements OnInit {
     'p3b', // MakerDao Silver: Axies have a 2% greater chance to spill LUNA when traveling over land this item is placed on.
   ];
   totalItemsPrice: { [key: string]: number } = { eth: 0, usd: 0 };
-  currentTimeStamp = new Date().getTime();
+  currentTimestamp = new Date().getTime() / 1000;
 
   constructor(private diffService: DiffService) {}
 
@@ -93,7 +93,7 @@ export class DiffComponent implements OnInit {
         // Land Item
         forkJoin(
           filteredItemAlises.map((itemAlias) =>
-            this.diffService.getCheapestItem(itemAlias)
+            this.diffService.getitemAliasAll(itemAlias)
           )
         ).subscribe((landItems) => {
           next: landItems.forEach((item) => {
@@ -121,6 +121,16 @@ export class DiffComponent implements OnInit {
               )
             );
         });
+      });
+    });
+
+    // All item alias
+    this.diffService.getitemAliasAll('f11c').subscribe((result) => {
+      const items = result.data.items.results;
+      items.forEach((item) => {
+        if (+item.auction.endingTimestamp > this.currentTimestamp) {
+          console.log(item, +item.auction.endingPrice / 1e18);
+        }
       });
     });
   }
