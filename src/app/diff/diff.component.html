@@ -351,14 +351,18 @@
           </dd>
           <dt
             *ngIf="
-              +landItem.data.item.auction.endingTimestamp > currentTimestamp
+              +landItem.data.item.auction.endingTimestamp > currentTimestamp &&
+              +landItem.data.item.auction.currentPrice !==
+                +landItem.data.item.auction.endingPrice
             "
           >
             Last Price
           </dt>
           <dd
             *ngIf="
-              +landItem.data.item.auction.endingTimestamp > currentTimestamp
+              +landItem.data.item.auction.endingTimestamp > currentTimestamp &&
+              +landItem.data.item.auction.currentPrice !==
+                +landItem.data.item.auction.endingPrice
             "
           >
             Ξ
@@ -367,6 +371,16 @@
             }}
             @
             {{ readableDate(+landItem.data.item.auction.endingTimestamp) }}
+          </dd>
+          <dt>Seller</dt>
+          <dd>
+            <a
+              href="https://marketplace.axieinfinity.com/profile/{{
+                hex2ronin(landItem.data.item.owner)
+              }}/item"
+              target="_blank"
+              >{{ getName(landItem.data.item.ownerProfile.name) }}</a
+            >
           </dd>
         </dl>
       </td>

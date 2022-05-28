@@ -48,6 +48,9 @@ export class DiffComponent implements OnInit {
   ];
   totalItemsPrice: { [key: string]: number } = { eth: 0, usd: 0 };
   currentTimestamp = new Date().getTime() / 1000;
+  specificItemAliases: string[] = [
+    'lny5', // Crimson Tiger: This item has no effect.
+  ];
 
   constructor(private diffService: DiffService) {}
 
@@ -91,11 +94,14 @@ export class DiffComponent implements OnInit {
         );
 
         // Land Item
-        forkJoin(
-          filteredItemAlises.map((itemAlias) =>
+        forkJoin([
+          ...filteredItemAlises.map((itemAlias) =>
             this.diffService.getCheapestItem(itemAlias)
-          )
-        ).subscribe((landItems) => {
+          ),
+          ...this.specificItemAliases.map((itemAlias) =>
+            this.diffService.getCheapestItem(itemAlias, 'forest', 'rare')
+          ),
+        ]).subscribe((landItems) => {
           landItems.forEach((item) => {
             const [first] = item.data.items.results;
             this.diffService
@@ -163,5 +169,14 @@ export class DiffComponent implements OnInit {
       hour12: true,
     } as const;
     return new Date(timestamp * 1000).toLocaleTimeString(lang, options);
+  }
+
+  hex2ronin(address: string): string {
+    const [first, last] = address.split('0x');
+    return `ronin:${last}`;
+  }
+
+  getName(name: string): string {
+    return name.trim() || 'Lunacian';
   }
 }
