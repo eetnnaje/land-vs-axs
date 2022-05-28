@@ -77,19 +77,30 @@
           </li>
           <li>
             <a
-              href="https://marketplace.axieinfinity.com/land/?type={{
-                cp.data.lands.results[0].landType | titlecase
-              }}"
-              target="_blank"
-              >MP &nearhk;</a
-            >
-            &mdash;
-            <a
               href="https://marketplace.axieinfinity.com/land/{{
                 cp.data.lands.results[0].col
               }}/{{ cp.data.lands.results[0].row }}"
               target="_blank"
               >Plot &nearhk;</a
+            >
+            by
+            <a
+              href="https://marketplace.axieinfinity.com/profile/{{
+                hex2ronin(cp.data.lands.results[0].owner)
+              }}/item"
+              target="_blank"
+              >{{
+                getName(cp.data.lands.results[0].ownerProfile.name)
+              }}
+              &nearhk;</a
+            >
+            from
+            <a
+              href="https://marketplace.axieinfinity.com/land/?type={{
+                cp.data.lands.results[0].landType | titlecase
+              }}"
+              target="_blank"
+              >MP &nearhk;</a
             >
           </li>
         </ul>
