@@ -35,6 +35,11 @@
     <li>
       <label for="axs">AXS: </label>
       <input #iAxs type="number" step="0.0" value="115.5" />
+      (Ξ
+      {{
+        (exchangeRates.data.exchangeRate.axs.usd * +iAxs.value) /
+          exchangeRates.data.exchangeRate.eth.usd | number: "0.2-2"
+      }})
     </li>
     <li>
       <label for="apr">APR %: </label>
