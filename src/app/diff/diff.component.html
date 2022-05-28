@@ -380,11 +380,27 @@
         <dl>
           <dt>Current Price</dt>
           <dd>
-            Ξ
-            {{
-              +landItem.data.item.auction.currentPrice / 1e18 | number: "0.4-4"
-            }}
-            ({{ landItem.data.item.auction.currentPriceUSD | currency: "USD" }})
+            <ul>
+              <li>
+                Ξ
+                {{
+                  +landItem.data.item.auction.currentPrice / 1e18
+                    | number: "0.4-4"
+                }}
+              </li>
+              <li>
+                {{
+                  +landItem.data.item.auction.currentPriceUSD /
+                    exchangeRates.data.exchangeRate.axs.usd | number: "0.4-4"
+                }}
+                AXS
+              </li>
+              <li>
+                ({{
+                  landItem.data.item.auction.currentPriceUSD | currency: "USD"
+                }})
+              </li>
+            </ul>
           </dd>
           <dt
             *ngIf="
@@ -402,14 +418,29 @@
                 +landItem.data.item.auction.endingPrice
             "
           >
-            Ξ
-            {{
-              +landItem.data.item.auction.endingPrice / 1e18 | number: "0.4-4"
-            }}
-            ({{
-              (+landItem.data.item.auction.endingPrice / 1e18) *
-                exchangeRates.data.exchangeRate.eth.usd | currency: "USD"
-            }})
+            <ul>
+              <li>
+                Ξ
+                {{
+                  +landItem.data.item.auction.endingPrice / 1e18
+                    | number: "0.4-4"
+                }}
+              </li>
+              <li>
+                {{
+                  ((+landItem.data.item.auction.endingPrice / 1e18) *
+                    exchangeRates.data.exchangeRate.eth.usd) /
+                    exchangeRates.data.exchangeRate.axs.usd | number: "0.4-4"
+                }}
+                AXS
+              </li>
+              <li>
+                {{
+                  (+landItem.data.item.auction.endingPrice / 1e18) *
+                    exchangeRates.data.exchangeRate.eth.usd | currency: "USD"
+                }}
+              </li>
+            </ul>
             <div>
               @ {{ readableDate(+landItem.data.item.auction.endingTimestamp) }}
             </div>
