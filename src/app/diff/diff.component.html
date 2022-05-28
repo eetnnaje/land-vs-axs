@@ -406,8 +406,13 @@
             {{
               +landItem.data.item.auction.endingPrice / 1e18 | number: "0.4-4"
             }}
-            @
-            {{ readableDate(+landItem.data.item.auction.endingTimestamp) }}
+            ({{
+              (+landItem.data.item.auction.endingPrice / 1e18) *
+                exchangeRates.data.exchangeRate.eth.usd | currency: "USD"
+            }})
+            <div>
+              @ {{ readableDate(+landItem.data.item.auction.endingTimestamp) }}
+            </div>
           </dd>
           <dt>Seller</dt>
           <dd>
