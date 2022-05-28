@@ -31,6 +31,25 @@ tfoot {
   text-align: right;
 }
 
+/* Daily AXS Reward */
+.daily-axs-reward ul {
+  list-style: none;
+  margin-top: 0;
+  padding-left: 0;
+}
+.daily-axs-reward p {
+  margin-bottom: 0.25rem;
+}
+
+.daily-axs-reward li {
+  padding: 0.25rem 0;
+}
+
+.daily-axs-reward label {
+  display: inline-block;
+  width: 3.5rem;
+}
+
 /* Cheapest Plots */
 .cheapest-plots {
   margin-top: 0.75rem;
