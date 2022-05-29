@@ -129,21 +129,6 @@ export class DiffComponent implements OnInit {
     });
   }
 
-  getCompoundingReward(
-    value: number,
-    reward: number,
-    apr: number = this.apr,
-    days: number = 365
-  ): number {
-    let n = value;
-    Array(days)
-      .fill(0)
-      .forEach((day) => {
-        n += (apr / 100 / days) * n + reward;
-      });
-    return n;
-  }
-
   onAprKeyUp(value: string): void {
     this.apr = +value;
   }
@@ -154,6 +139,31 @@ export class DiffComponent implements OnInit {
     days: number = 365
   ): number {
     return (apr / 100 / days) * value;
+  }
+
+  getCompoundingReward(
+    value: number,
+    apr: number = this.apr,
+    days = 365
+  ): number {
+    let n = value;
+    Array(days)
+      .fill(0)
+      .forEach(() => (n += this.getDailyReward(n, apr, days)));
+    return n;
+  }
+
+  getFixedCompoundingReward(
+    value: number,
+    reward: number,
+    apr: number = this.apr,
+    days = 365
+  ): number {
+    let n = value;
+    Array(days)
+      .fill(0)
+      .forEach(() => (n += this.getDailyReward(n, apr, days) + reward));
+    return n;
   }
 
   getItemDetail(itemAlias: string, itemId: number): Observable<ItemDetail> {

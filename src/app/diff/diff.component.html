@@ -35,22 +35,23 @@
     <li>
       <label for="axs">AXS: </label>
       <input #iAxs type="number" step="0.0" value="115.5" />
-      (Ξ
-      {{
+      ({{
         (exchangeRates.data.exchangeRate.axs.usd * +iAxs.value) /
-          exchangeRates.data.exchangeRate.eth.usd | number: "0.2-2"
-      }})
+          exchangeRates.data.exchangeRate.eth.usd | number: "0.4-4"
+      }}
+      Ξ)
     </li>
     <li>
       <label for="apr">APR %: </label>
       <input #iApr type="number" step="0.0" value="82" />
+      ({{ getCompoundingReward(+iAxs.value, +iApr.value) | number: "0.4-4" }}
+      &infin;)
     </li>
     <li>
       <label for="total">Total: </label>
       <strong
-        >{{ (+iApr.value / 100 / 365) * +iAxs.value | number: "0.2-2" }} ({{
-          (+iApr.value / 100 / 365) *
-            +iAxs.value *
+        >{{ getDailyReward(+iAxs.value, +iApr.value) | number: "0.4-4" }} ({{
+          getDailyReward(+iAxs.value, +iApr.value) *
             exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
         }})</strong
       >
@@ -150,13 +151,13 @@
           <dt>Annual (Cmpd.)</dt>
           <dd>
             {{
-              getCompoundingReward(
+              getFixedCompoundingReward(
                 0,
                 stakingRewards[cp.data.lands.results[0].landType | lowercase]
               ) | number: "0.4-4"
             }}
             ({{
-              getCompoundingReward(
+              getFixedCompoundingReward(
                 0,
                 stakingRewards[cp.data.lands.results[0].landType | lowercase]
               ) * exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
@@ -174,80 +175,44 @@
                 exchangeRates.data.exchangeRate.axs.usd | number: "0.4-4"
             }}
             ({{
-              getCompoundingReward(
-                0,
-                stakingRewards[cp.data.lands.results[0].landType | lowercase]
-              ) * exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
+              (+cp.data.lands.results[0].auction.currentPriceUSD /
+                exchangeRates.data.exchangeRate.axs.usd) *
+                exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
             }})
           </dd>
           <dt>Gain in Staking</dt>
           <dd>
             {{
-              getCompoundingReward(
+              getFixedCompoundingReward(
                 0,
                 stakingRewards[cp.data.lands.results[0].landType | lowercase]
-              ) -
-                +cp.data.lands.results[0].auction.currentPriceUSD /
-                  exchangeRates.data.exchangeRate.axs.usd | number: "0.4-4"
+              ) | number: "0.4-4"
             }}
             ({{
-              (getCompoundingReward(
+              getFixedCompoundingReward(
                 0,
                 stakingRewards[cp.data.lands.results[0].landType | lowercase]
-              ) -
-                +cp.data.lands.results[0].auction.currentPriceUSD /
-                  exchangeRates.data.exchangeRate.axs.usd) *
-                exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
+              ) * exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
             }})
           </dd>
           <dt>Total in AXS</dt>
           <dd>
             {{
-              getCompoundingReward(
-                0,
-                stakingRewards[cp.data.lands.results[0].landType | lowercase]
-              ) +
-                +cp.data.lands.results[0].auction.currentPriceUSD /
-                  exchangeRates.data.exchangeRate.axs.usd | number: "0.4-4"
-            }}
-            ({{
-              (getCompoundingReward(
-                0,
-                stakingRewards[cp.data.lands.results[0].landType | lowercase]
-              ) +
-                +cp.data.lands.results[0].auction.currentPriceUSD /
-                  exchangeRates.data.exchangeRate.axs.usd) *
-                exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
-            }})
-          </dd>
-          <dt>vs. AXS Staking</dt>
-          <dd>
-            {{
-              getCompoundingReward(
-                0,
-                stakingRewards[cp.data.lands.results[0].landType | lowercase]
-              ) +
-                +cp.data.lands.results[0].auction.currentPriceUSD /
-                  exchangeRates.data.exchangeRate.axs.usd -
-                getCompoundingReward(
-                  +cp.data.lands.results[0].auction.currentPriceUSD /
-                    exchangeRates.data.exchangeRate.axs.usd,
-                  0
+              +cp.data.lands.results[0].auction.currentPriceUSD /
+                exchangeRates.data.exchangeRate.axs.usd +
+                getFixedCompoundingReward(
+                  0,
+                  stakingRewards[cp.data.lands.results[0].landType | lowercase]
                 ) | number: "0.4-4"
             }}
             ({{
-              (getCompoundingReward(
-                0,
-                stakingRewards[cp.data.lands.results[0].landType | lowercase]
-              ) +
-                +cp.data.lands.results[0].auction.currentPriceUSD /
-                  exchangeRates.data.exchangeRate.axs.usd -
-                getCompoundingReward(
-                  +cp.data.lands.results[0].auction.currentPriceUSD /
-                    exchangeRates.data.exchangeRate.axs.usd,
-                  0
-                )) *
-                exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
+              +cp.data.lands.results[0].auction.currentPriceUSD /
+                exchangeRates.data.exchangeRate.axs.usd +
+                getFixedCompoundingReward(
+                  0,
+                  stakingRewards[cp.data.lands.results[0].landType | lowercase]
+                ) *
+                  exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
             }})
           </dd>
           <p>
@@ -274,15 +239,13 @@
               {{
                 getCompoundingReward(
                   +cp.data.lands.results[0].auction.currentPriceUSD /
-                    exchangeRates.data.exchangeRate.axs.usd,
-                  0
+                    exchangeRates.data.exchangeRate.axs.usd
                 ) | number: "0.4-4"
               }}
               ({{
                 getCompoundingReward(
                   +cp.data.lands.results[0].auction.currentPriceUSD /
-                    exchangeRates.data.exchangeRate.axs.usd,
-                  0
+                    exchangeRates.data.exchangeRate.axs.usd
                 ) * exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
               }})
             </dd>
@@ -291,32 +254,30 @@
               {{
                 getCompoundingReward(
                   +cp.data.lands.results[0].auction.currentPriceUSD /
-                    exchangeRates.data.exchangeRate.axs.usd,
-                  0
+                    exchangeRates.data.exchangeRate.axs.usd
                 ) -
-                  (getCompoundingReward(
-                    0,
-                    stakingRewards[
-                      cp.data.lands.results[0].landType | lowercase
-                    ]
-                  ) +
-                    +cp.data.lands.results[0].auction.currentPriceUSD /
-                      exchangeRates.data.exchangeRate.axs.usd) | number: "0.4-4"
+                  (+cp.data.lands.results[0].auction.currentPriceUSD /
+                    exchangeRates.data.exchangeRate.axs.usd +
+                    getFixedCompoundingReward(
+                      0,
+                      stakingRewards[
+                        cp.data.lands.results[0].landType | lowercase
+                      ]
+                    )) | number: "0.4-4"
               }}
               ({{
                 (getCompoundingReward(
                   +cp.data.lands.results[0].auction.currentPriceUSD /
-                    exchangeRates.data.exchangeRate.axs.usd,
-                  0
+                    exchangeRates.data.exchangeRate.axs.usd
                 ) -
-                  (getCompoundingReward(
-                    0,
-                    stakingRewards[
-                      cp.data.lands.results[0].landType | lowercase
-                    ]
-                  ) +
-                    +cp.data.lands.results[0].auction.currentPriceUSD /
-                      exchangeRates.data.exchangeRate.axs.usd)) *
+                  (+cp.data.lands.results[0].auction.currentPriceUSD /
+                    exchangeRates.data.exchangeRate.axs.usd +
+                    getFixedCompoundingReward(
+                      0,
+                      stakingRewards[
+                        cp.data.lands.results[0].landType | lowercase
+                      ]
+                    ))) *
                   exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
               }})
             </dd>
