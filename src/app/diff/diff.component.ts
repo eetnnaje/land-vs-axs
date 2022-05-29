@@ -50,6 +50,7 @@ export class DiffComponent implements OnInit {
   currentTimestamp = new Date().getTime() / 1000;
   specificItemAliases: string[] = [
     'lny5', // Crimson Tiger: This item has no effect.
+    'p5', // Aave Phantom Altar: Increase Axie map travel speed by 2%.
   ];
 
   constructor(private diffService: DiffService) {}
