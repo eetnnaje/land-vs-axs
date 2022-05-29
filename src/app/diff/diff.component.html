@@ -206,13 +206,13 @@
                 ) | number: "0.4-4"
             }}
             ({{
-              +cp.data.lands.results[0].auction.currentPriceUSD /
+              (+cp.data.lands.results[0].auction.currentPriceUSD /
                 exchangeRates.data.exchangeRate.axs.usd +
                 getFixedCompoundingReward(
                   0,
                   stakingRewards[cp.data.lands.results[0].landType | lowercase]
-                ) *
-                  exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
+                )) *
+                exchangeRates.data.exchangeRate.axs.usd | currency: "USD"
             }})
           </dd>
           <p>
