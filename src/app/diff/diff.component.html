@@ -34,7 +34,7 @@
   <ul>
     <li>
       <label for="axs">AXS: </label>
-      <input #iAxs type="number" step="0.0" value="115.5" />
+      <input #iAxs type="number" step="0.0" [value]="stakingRewards['forest'] * 365" />
       ({{
         (exchangeRates.data.exchangeRate.axs.usd * +iAxs.value) /
           exchangeRates.data.exchangeRate.eth.usd | number: "0.4-4"
